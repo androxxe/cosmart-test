@@ -1,23 +1,61 @@
 import * as React from "react";
-import { View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { Home, Login } from "@/screens";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Feather } from "@expo/vector-icons";
+import colors from "tailwindcss/colors";
+import { MainBottomTabsParamList, RootStackParamList } from "./index.type";
 
-function HomeScreen() {
+const Stack = createStackNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator<MainBottomTabsParamList>();
+
+function MainBottomTabs() {
   return (
-    <View className="flex flex-1 bg-blue-500 items-center justify-center">
-      <Text className="text-red-500">Home Screen</Text>
-    </View>
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={Home}
+        options={{
+          tabBarIcon: ({ focused }: any) => (
+            <Feather name="home" size={24} color={focused ? colors.indigo[600] : colors.slate[500]} />
+          ),
+          tabBarLabel: "Home",
+          tabBarActiveTintColor: colors.indigo[600],
+          tabBarInactiveTintColor: colors.slate[500],
+        }}
+      />
+      <Tab.Screen
+        name="Profil"
+        component={Home}
+        options={{
+          tabBarIcon: ({ focused }: any) => (
+            <Feather name="user" size={24} color={focused ? colors.indigo[600] : colors.slate[500]} />
+          ),
+          tabBarLabel: "Profil",
+          tabBarActiveTintColor: colors.indigo[600],
+          tabBarInactiveTintColor: colors.slate[500],
+        }}
+      />
+    </Tab.Navigator>
   );
 }
-
-const Stack = createStackNavigator();
 
 export const Navigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+        initialRouteName="Login"
+      >
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="MainBottomTabs" component={MainBottomTabs} />
       </Stack.Navigator>
     </NavigationContainer>
   );

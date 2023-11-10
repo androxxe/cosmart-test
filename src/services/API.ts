@@ -7,12 +7,12 @@ export interface APIError {
 }
 
 class Api {
-  private API_URL = process.env.NODE_ENV === "development" ? process.env.API_URL : "";
+  private API_URL = process.env.NODE_ENV === "development" ? process.env.API_URL : "http://openlibrary.org";
 
   constructor() {
-    if (this.API_URL === undefined) {
-      throw new Error("API_URL is undefined");
-    }
+    // if (this.API_URL === undefined) {
+    //   throw new Error("API_URL is undefined");
+    // }
   }
 
   async request<T>(path: string, options: RequestInit = {}): Promise<T> {
