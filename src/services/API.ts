@@ -1,115 +1,73 @@
-// import { reset } from "@/helpers";
-// import { RefreshTokenRes } from "@/types";
+export interface APIError {
+  statusCode: number;
+  status: string;
+  message: string;
+  data: null;
+  errors: string[];
+}
 
-// const API_URL =
-//   process.env.NODE_ENV === "development"
-//     ? process.env.API_URL
-//     : "https://api.lapor-mas.id/v1";
+class Api {
+  private API_URL = process.env.NODE_ENV === "development" ? process.env.API_URL : "";
 
-// export interface APIError {
-//   statusCode: number;
-//   status: string;
-//   message: string;
-//   data: null;
-//   errors: string[];
-// }
+  constructor() {
+    if (this.API_URL === undefined) {
+      throw new Error("API_URL is undefined");
+    }
+  }
 
-// class Api {
-//   private token: string | null = null;
+  async request<T>(path: string, options: RequestInit = {}): Promise<T> {
+    const headers = new Headers();
+    headers.append("Accept", "application/json");
 
-//   constructor() {
-//     if (API_URL === undefined) {
-//       throw new Error("API_URL is undefined");
-//     }
-//   }
+    if (options.body instanceof FormData === false) {
+      headers.append("Content-Type", "application/json");
+    }
 
-//   setToken(token: string) {
-//     this.token = token;
-//   }
+    const requestOptions: RequestInit = {
+      mode: "cors",
+      credentials: "include",
+      ...options,
+      headers,
+    };
 
-//   resetToken() {
-//     this.token = null;
-//   }
+    try {
+      const response: Response = await fetch(`${this.API_URL}${path}`, requestOptions);
+      const res: T = await response.json();
 
-//   getToken() {
-//     return this.token;
-//   }
+      if (!response.ok) {
+        return Promise.reject(res);
+      }
 
-//   async request<T>(path: string, options: RequestInit = {}): Promise<T> {
-//     const headers = new Headers();
-//     headers.append("User-Agent", "LAPORMAS_MOBILE");
-//     headers.append("Authorization", `Bearer ${API.getToken()}`);
-//     headers.append("Accept", "application/json");
+      return res;
+    } catch (error: any) {
+      console.error(error.stack);
+      return Promise.reject({
+        ...error,
+        message: error.message,
+      });
+    }
+  }
 
-//     if (options.body instanceof FormData === false) {
-//       headers.append("Content-Type", "application/json");
-//     }
+  get<T>(path: string): Promise<T> {
+    return this.request(path);
+  }
 
-//     const requestOptions: RequestInit = {
-//       mode: "cors",
-//       credentials: "include",
-//       ...options,
-//       headers,
-//     };
+  put<T>(path: string, body: object): Promise<T> {
+    return this.request(path, { method: "PUT", body: JSON.stringify(body) });
+  }
 
-//     try {
-//       const response: Response = await fetch(
-//         `${API_URL}${path}`,
-//         requestOptions
-//       );
-//       const res: T = await response.json();
+  remove<T, B>(path: string, body: B): Promise<T> {
+    return this.request(path, { method: "DELETE", body: JSON.stringify(body) });
+  }
 
-//       if (!response.ok) {
-//         //@ts-ignore
-//         if (res.message === "TokenExpired") {
-//           try {
-//             // Not importing endpoints coz it will cause circular dependency
-//             const res_refresh_token = await this.post<RefreshTokenRes, {}>(
-//               "/auth/refresh-token",
-//               {}
-//             );
-//             API.setToken(res_refresh_token.data.token);
+  post<T, B>(path: string, body: B): Promise<T> {
+    return this.request(path, {
+      method: "POST",
+      body: body instanceof FormData ? body : JSON.stringify(body),
+    });
+  }
+}
 
-//             return this.request(path, options);
-//           } catch (error: any) {
-//             reset("AuthStack");
-//             return Promise.reject(res);
-//           }
-//         }
+const API = new Api();
 
-//         return Promise.reject(res);
-//       }
-
-//       return res;
-//     } catch (error: any) {
-//       console.error(error.stack);
-//       return Promise.reject({
-//         ...error,
-//         message: error.message,
-//       });
-//     }
-//   }
-
-//   get<T>(path: string): Promise<T> {
-//     return this.request(path);
-//   }
-
-//   put<T>(path: string, body: object): Promise<T> {
-//     return this.request(path, { method: "PUT", body: JSON.stringify(body) });
-//   }
-
-//   remove<T, B>(path: string, body: B): Promise<T> {
-//     return this.request(path, { method: "DELETE", body: JSON.stringify(body) });
-//   }
-
-//   post<T, B>(path: string, body: B): Promise<T> {
-//     return this.request(path, {
-//       method: "POST",
-//       body: body instanceof FormData ? body : JSON.stringify(body),
-//     });
-//   }
-// }
-
-// const API = new Api();
-
-// export default API;
+export default API;
