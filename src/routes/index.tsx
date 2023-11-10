@@ -5,30 +5,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 function HomeScreen() {
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%",
-      }}
-    >
-      <Text>Home Screen</Text>
-    </View>
-  );
-}
-
-function HomeScreen2() {
-  return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%",
-      }}
-    >
-      <Text>Home Screen</Text>
+    <View className="flex flex-1 bg-blue-500 items-center justify-center">
+      <Text className="text-red-500">Home Screen</Text>
     </View>
   );
 }
@@ -40,7 +18,6 @@ export const Navigator = () => {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Home2" component={HomeScreen2} />
       </Stack.Navigator>
     </NavigationContainer>
   );
