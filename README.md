@@ -1,4 +1,12 @@
-# Cosmart Test
+# Cosmart Mobile Test
+
+<p align="center">
+    <img src="./screenshots/1.png" alt="Screenshot 1" width="200"/>
+    <img src="./screenshots/2.png" alt="Screenshot 2" width="200"/>
+    <img src="./screenshots/3.png" alt="Screenshot 3" width="200"/>
+</p>
+
+This project use node version 18 & yarn as package manager
 
 ## To Do
 1. Setup eslint
@@ -8,7 +16,14 @@
 
 1.  This project uses Yarn, so run `yarn install`.
 
-2.  To build the project, follow the instructions below:
+2.  To **run** this project, follow the instrusctions below: 
+    a. **Android:**
+    ```yarn android```
+
+    b. **iOS**
+    ```yarn ios```
+
+3.  To **build** the project, follow the instructions below:
 
     a. **Android:**
 
@@ -21,13 +36,12 @@
         yarn build:android:ios
 
     b. **iOS:**
-    If you are using Windows, run:
+    
+    Open the project on Xcode ```(ios folder)```, select menu Product -> Build
 
-         yarn build:ios:windows
+    For more docs: https://reactnative.dev/docs/publishing-to-app-store
 
-    If you are using MacOS, run:
-
-         build:ios:ios
+    Or if you want to cloud build you can use setup ```eas-cli```
 
 ## Tech Stack
 1. React Native
