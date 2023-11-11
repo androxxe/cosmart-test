@@ -5,9 +5,16 @@ import colors from "tailwindcss/colors";
 import { Button } from "@/components/button";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackNavigation } from "@/routes/index.type";
+import { useAuthStore } from "@/store";
 
 const Profile = () => {
   const navigation = useNavigation<RootStackNavigation>();
+  const { setType, type } = useAuthStore();
+
+  const handleLogout = () => {
+    setType(undefined);
+    navigation.navigate("Login");
+  };
 
   return (
     <SafeAreaView>
@@ -20,13 +27,13 @@ const Profile = () => {
           <Text className="text-center text-base">0812 2669 6696</Text>
           <View className="flex items-center justify-center">
             <View className="bg-blue-600 px-3 py-1 rounded-full">
-              <Text className="text-base text-white">User</Text>
+              <Text className="text-base text-white uppercase">{type}</Text>
             </View>
           </View>
         </View>
       </View>
       <View className="absolute bottom-6 w-full">
-        <Button className="mx-4" onPress={() => navigation.replace("Login")}>
+        <Button className="mx-4" onPress={handleLogout}>
           <Text>Logout</Text>
         </Button>
       </View>

@@ -1,39 +1,18 @@
 import { BOOKS_GENRE } from "@/datas";
-import React from "react";
+import React, { useState } from "react";
 import { ActivityIndicator, FlatList, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { CardBook, CardBookSkeleton } from "./components/CardBook";
 import colors from "tailwindcss/colors";
 import { useBooks } from "@/hooks";
-import { cn } from "@/utils";
+import { MenuSubject } from "@/components";
+import { RootStackNavigation } from "@/routes/index.type";
+import { useNavigation } from "@react-navigation/native";
 
 export const Home = () => {
-  const [selectedSubject, setSelectedSubject] = React.useState<keyof typeof BOOKS_GENRE>(BOOKS_GENRE.PROGRAMMING);
+  const [selectedSubject, setSelectedSubject] = useState<keyof typeof BOOKS_GENRE>(BOOKS_GENRE.PROGRAMMING);
+  const navigaton = useNavigation<RootStackNavigation>();
 
   const { flattenedData, onEndReached, isFetchingNextPage, isFetching } = useBooks(selectedSubject);
-
-  const MenuSubject = () => (
-    <ScrollView horizontal={true} className="px-3 space-x-2">
-      {Object.keys(BOOKS_GENRE).map((subject, index) => (
-        <TouchableOpacity
-          onPress={() => setSelectedSubject(BOOKS_GENRE[subject])}
-          key={index}
-          className={cn(
-            "px-3 py-1 rounded-full border border-blue-600",
-            selectedSubject === BOOKS_GENRE[subject] ? "bg-blue-600 text-white" : ""
-          )}
-        >
-          <Text
-            className={cn(
-              "font-medium",
-              selectedSubject === BOOKS_GENRE[subject] ? "text-white font-bold" : "text-blue-500"
-            )}
-          >
-            {BOOKS_GENRE[subject]}
-          </Text>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
-  );
 
   return (
     <SafeAreaView className="bg-slate-50">
@@ -44,7 +23,7 @@ export const Home = () => {
             <>
               <View className="mb-6">
                 <Text className="mb-3 px-3 text-xl font-semibold">Explore By Genre</Text>
-                <MenuSubject />
+                <MenuSubject selectedSubject={selectedSubject} setSelectedSubject={setSelectedSubject} />
               </View>
               <Text className="text-xl font-semibold px-3 mb-3">Featured </Text>
               {isFetching && (
@@ -57,7 +36,9 @@ export const Home = () => {
             </>
           )}
           data={flattenedData}
-          renderItem={(data) => <CardBook data={data.item} />}
+          renderItem={(data) => (
+            <CardBook data={data.item} onPress={() => navigaton.navigate("BookDetail", { work: data.item })} />
+          )}
           keyExtractor={(item, index) => `${item.key}_${index}`}
           onEndReachedThreshold={0.5}
           onEndReached={onEndReached}

@@ -4,9 +4,12 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "tailwindcss/colors";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackNavigation } from "@/routes/index.type";
+import { useAuthStore } from "@/store";
 
 export const Login = () => {
   const navigation = useNavigation<RootStackNavigation>();
+
+  const { setType } = useAuthStore();
 
   const LoginButton = ({ onPress, title, icon }: { onPress: () => void; title: string; icon: JSX.Element }) => (
     <TouchableOpacity
@@ -27,12 +30,22 @@ export const Login = () => {
           <LoginButton
             icon={<Feather name="user" size={20} color={colors.blue[500]} />}
             title="User"
-            onPress={() => navigation.replace("MainBottomTabs")}
+            onPress={() => {
+              setType("user");
+              navigation.replace("MainBottomTabs", {
+                screen: "Home",
+              });
+            }}
           />
           <LoginButton
             icon={<MaterialCommunityIcons name="library" size={20} color={colors.blue[500]} />}
             title="Librarian"
-            onPress={() => navigation.replace("MainBottomTabs")}
+            onPress={() => {
+              setType("librarian");
+              navigation.replace("MainBottomTabs", {
+                screen: "BorrowedBook",
+              });
+            }}
           />
         </View>
       </View>

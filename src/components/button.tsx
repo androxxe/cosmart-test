@@ -2,13 +2,11 @@ import { cn } from "@/utils";
 import { ComponentProps } from "react";
 import { Text, TouchableOpacity } from "react-native";
 
-
 type ButtonProps = {
   children: JSX.Element;
-  loading?: boolean;
+  isLoading?: boolean;
   textClassName?: string;
   className?: string;
-  [key: string]: any;
 } & ComponentProps<typeof TouchableOpacity>;
 
 export const Button = (props: ButtonProps) => {

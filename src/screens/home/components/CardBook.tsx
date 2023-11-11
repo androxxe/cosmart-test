@@ -3,17 +3,13 @@ import { generateCover } from "@/utils";
 import { memo, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
-import { useNavigation } from "@react-navigation/native";
-import { RootStackNavigation } from "@/routes/index.type";
 
-export const CardBook = memo(({ data }: { data: Work }) => {
+export const CardBook = memo(({ data, onPress }: { data: Work; onPress: () => void }) => {
   const [isImageLoaded, setIsImageLoaded] = useState<boolean>(false);
-
-  const navigaton = useNavigation<RootStackNavigation>();
 
   return (
     <TouchableOpacity
-      onPress={() => navigaton.navigate("BookDetail", { work: data })}
+      onPress={onPress}
       activeOpacity={0.8}
       className="rounded-lg bg-white shadow-sm flex flex-row h-48 space-x-3 border border-slate-400 mx-3 mb-3"
     >
@@ -34,16 +30,19 @@ export const CardBook = memo(({ data }: { data: Work }) => {
         }}
       />
       <View className="flex justify-center flex-1 space-y-2">
-        <Text className="font-medium text-base mb-3 text-blue-600">{data.title}</Text>
-        <View>
-          <Text className="text-xs text-slate-700 font-bold mb-2 uppercase">Author:</Text>
+        <Text className="font-bold text-base mb-3 text-blue-600">{data.title}</Text>
+        <View className="mb-2">
+          <Text className="text-xs text-slate-700 font-bold uppercase">Author:</Text>
           <View>
             {data.authors.slice(0, 3).map((author) => (
               <Text>{author.name}</Text>
             ))}
           </View>
         </View>
-        <Text>{data.cover_edition_key}</Text>
+        <View className="mb-2">
+          <Text className="text-xs text-slate-700 font-bold uppercase">Cover Edition:</Text>
+          <Text>{data.cover_edition_key ?? "-"}</Text>
+        </View>
       </View>
     </TouchableOpacity>
   );
