@@ -25,12 +25,12 @@ export const Login = () => {
           <Text className="text-lg font-bold mb-4">Login Page</Text>
           <Text className="text-base font-normal mb-4">Please select the type of user you want</Text>
           <LoginButton
-            icon={<Feather name="user" size={20} color={colors.indigo[500]} />}
+            icon={<Feather name="user" size={20} color={colors.blue[500]} />}
             title="User"
             onPress={() => navigation.replace("MainBottomTabs")}
           />
           <LoginButton
-            icon={<MaterialCommunityIcons name="library" size={20} color={colors.indigo[500]} />}
+            icon={<MaterialCommunityIcons name="library" size={20} color={colors.blue[500]} />}
             title="Librarian"
             onPress={() => navigation.replace("MainBottomTabs")}
           />

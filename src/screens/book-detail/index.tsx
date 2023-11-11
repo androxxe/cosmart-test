@@ -7,13 +7,8 @@ import Constants from "expo-constants";
 import { generateCover } from "@/utils";
 import { TouchableOpacity } from "react-native";
 import { Button } from "@/components/button";
-import { Work } from "@/interfaces";
-import {
-  BottomSheetBackdrop,
-  BottomSheetBackdropProps,
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from "@gorhom/bottom-sheet";
+import { Author, Availability, Work } from "@/interfaces";
+import { BottomSheetBackdrop, BottomSheetBackdropProps, BottomSheetModal } from "@gorhom/bottom-sheet";
 
 const DataMapper = ({ work }: { work: Work }) => {
   const Mapper = ({ item }: { item: keyof Work }) => {
@@ -31,11 +26,11 @@ const DataMapper = ({ work }: { work: Work }) => {
             numberOfLines={numberOfLines}
             onTextLayout={({ nativeEvent: { lines } }) => setIsShowMore(lines.length >= 3)}
           >
-            {data.map((subject) => `${subject}, `)}
+            {(data as string[]).map((subject) => `${subject}, `)}
           </Text>
           {isShowMore && (
             <TouchableOpacity onPress={() => setNumberOfLines(numberOfLines === undefined ? 3 : undefined)}>
-              <Text className="my-2 text-indigo-600">{numberOfLines === undefined ? "Show Less" : "Show More"}</Text>
+              <Text className="my-2 text-blue-600">{numberOfLines === undefined ? "Show Less" : "Show More"}</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -43,8 +38,8 @@ const DataMapper = ({ work }: { work: Work }) => {
     } else if (item === "ia_collection") {
       return (
         <View className="gap-2 flex flex-row flex-wrap mt-1">
-          {data.map((collection) => (
-            <View className="rounded-full bg-slate-300">
+          {(data as string[]).map((collection, index) => (
+            <View className="rounded-full bg-slate-300" key={index}>
               <Text className="text-xs text-slate-800 px-2 py-1">{collection}</Text>
             </View>
           ))}
@@ -53,8 +48,8 @@ const DataMapper = ({ work }: { work: Work }) => {
     } else if (item === "authors") {
       return (
         <View className="gap-2 flex flex-row flex-wrap mt-1">
-          {data.map((author) => (
-            <View className="rounded-full bg-slate-300">
+          {(data as Author[]).map((author, index) => (
+            <View className="rounded-full bg-slate-300" key={index}>
               <Text className="text-xs text-slate-800 px-2 py-1">{author.name}</Text>
             </View>
           ))}
@@ -77,7 +72,9 @@ const DataMapper = ({ work }: { work: Work }) => {
       return (
         <View className="flex items-start mt-1">
           <View className="rounded-full bg-slate-300">
-            <Text className="text-xs text-slate-800 px-2 py-1">{data.available_to_borrow ? "Yes" : "No"}</Text>
+            <Text className="text-xs text-slate-800 px-2 py-1">
+              {(data as Availability).available_to_borrow ? "Yes" : "No"}
+            </Text>
           </View>
         </View>
       );
@@ -88,9 +85,9 @@ const DataMapper = ({ work }: { work: Work }) => {
 
   return (
     <View>
-      {Object.keys(work).map((item) => {
+      {Object.keys(work).map((item, index) => {
         return (
-          <View className="space-y-1 border-b border-slate-300 py-2">
+          <View className="space-y-1 border-b border-slate-300 py-2" key={index}>
             <Text className="text-sm text-slate-600 font-bold uppercase">{item.replaceAll("_", " ")}</Text>
             <Mapper item={item} />
           </View>
@@ -101,9 +98,9 @@ const DataMapper = ({ work }: { work: Work }) => {
 };
 
 const BookDetail = () => {
-  // const { work } = useRoute<RootStackParamList["BookDetail"]>().params;
   const route = useRoute<RootStackParamList["BookDetail"]>();
   const navigation = useNavigation<RootStackNavigation>();
+
   const { work }: { work: Work } = route.params;
   const bottomSheetSubjectRef = useRef<BottomSheetModal>(null);
 

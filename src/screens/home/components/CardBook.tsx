@@ -34,9 +34,9 @@ export const CardBook = memo(({ data }: { data: Work }) => {
         }}
       />
       <View className="flex justify-center flex-1 space-y-2">
-        <Text className="font-medium text-base mb-3 text-indigo-600">{data.title}</Text>
+        <Text className="font-medium text-base mb-3 text-blue-600">{data.title}</Text>
         <View>
-          <Text className="text-xs text-slate-900 font-bold mb-2">Author:</Text>
+          <Text className="text-xs text-slate-700 font-bold mb-2 uppercase">Author:</Text>
           <View>
             {data.authors.slice(0, 3).map((author) => (
               <Text>{author.name}</Text>

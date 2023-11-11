@@ -7,6 +7,7 @@ import { Feather } from "@expo/vector-icons";
 import colors from "tailwindcss/colors";
 import { MainBottomTabsParamList, RootStackParamList } from "./index.type";
 import BookDetail from "@/screens/book-detail";
+import Profile from "@/screens/profile";
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainBottomTabsParamList>();
@@ -23,22 +24,22 @@ function MainBottomTabs() {
         component={Home}
         options={{
           tabBarIcon: ({ focused }: any) => (
-            <Feather name="home" size={24} color={focused ? colors.indigo[600] : colors.slate[500]} />
+            <Feather name="home" size={24} color={focused ? colors.blue[600] : colors.slate[500]} />
           ),
           tabBarLabel: "Home",
-          tabBarActiveTintColor: colors.indigo[600],
+          tabBarActiveTintColor: colors.blue[600],
           tabBarInactiveTintColor: colors.slate[500],
         }}
       />
       <Tab.Screen
         name="Profil"
-        component={Home}
+        component={Profile}
         options={{
           tabBarIcon: ({ focused }: any) => (
-            <Feather name="user" size={24} color={focused ? colors.indigo[600] : colors.slate[500]} />
+            <Feather name="user" size={24} color={focused ? colors.blue[600] : colors.slate[500]} />
           ),
           tabBarLabel: "Profil",
-          tabBarActiveTintColor: colors.indigo[600],
+          tabBarActiveTintColor: colors.blue[600],
           tabBarInactiveTintColor: colors.slate[500],
         }}
       />

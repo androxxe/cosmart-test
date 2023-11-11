@@ -2,48 +2,38 @@ import { BOOKS_GENRE } from "@/datas";
 import React from "react";
 import { ActivityIndicator, FlatList, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { CardBook, CardBookSkeleton } from "./components/CardBook";
-
-import { getBooksBySubject } from "@/services/endpoints";
-import { BooksBySubjectResponse } from "@/interfaces";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { BooksPayload } from "@/services/endpoints.type";
 import colors from "tailwindcss/colors";
+import { useBooks } from "@/hooks";
+import { cn } from "@/utils";
 
 export const Home = () => {
-  const {
-    data,
-    isLoading,
-    isSuccess,
-    isError,
-    hasNextPage,
-    hasPreviousPage,
-    fetchNextPage,
-    isFetching,
-    isFetchingNextPage,
-    ...props
-  } = useInfiniteQuery<BooksBySubjectResponse>({
-    queryKey: ["books"],
-    queryFn: ({ pageParam = { limit: 4, offset: 0 } }) => {
-      return getBooksBySubject("love", pageParam as BooksPayload);
-    },
-    initialPageParam: {
-      limit: 4,
-      offset: 0,
-    },
-    getNextPageParam: (lastPage, pages) => {
-      if (pages.flatMap((page) => page.works).length >= lastPage.work_count) return false;
+  const [selectedSubject, setSelectedSubject] = React.useState<keyof typeof BOOKS_GENRE>(BOOKS_GENRE.PROGRAMMING);
 
-      const params = {
-        offset: pages.flatMap((page) => page.works).length,
-        limit: 4,
-      };
-      console.log("params", params);
-      return params;
-    },
-  });
+  const { flattenedData, onEndReached, isFetchingNextPage, isFetching } = useBooks(selectedSubject);
 
-  const flattenedWorks =
-    data?.pages.flatMap((page, index) => page.works.map((work) => ({ ...work, page: index + 1 }))) || [];
+  const MenuSubject = () => (
+    <ScrollView horizontal={true} className="px-3 space-x-2">
+      {Object.keys(BOOKS_GENRE).map((subject, index) => (
+        <TouchableOpacity
+          onPress={() => setSelectedSubject(BOOKS_GENRE[subject])}
+          key={index}
+          className={cn(
+            "px-3 py-1 rounded-full border border-blue-600",
+            selectedSubject === BOOKS_GENRE[subject] ? "bg-blue-600 text-white" : ""
+          )}
+        >
+          <Text
+            className={cn(
+              "font-medium",
+              selectedSubject === BOOKS_GENRE[subject] ? "text-white font-bold" : "text-blue-500"
+            )}
+          >
+            {BOOKS_GENRE[subject]}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
+  );
 
   return (
     <SafeAreaView className="bg-slate-50">
@@ -52,44 +42,30 @@ export const Home = () => {
         <FlatList
           ListHeaderComponent={() => (
             <>
-              <View className="space-y-3 mb-6">
-                <Text className="px-3 text-xl font-semibold">Explore By Genre</Text>
-                <ScrollView horizontal={true} className="px-3 space-x-2">
-                  {Object.keys(BOOKS_GENRE).map((genre, index) => (
-                    <TouchableOpacity key={index} className="px-3 py-1 rounded-full border border-indigo-500">
-                      <Text className="font-medium text-indigo-500">{BOOKS_GENRE[genre]}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
+              <View className="mb-6">
+                <Text className="mb-3 px-3 text-xl font-semibold">Explore By Genre</Text>
+                <MenuSubject />
               </View>
               <Text className="text-xl font-semibold px-3 mb-3">Featured </Text>
+              {isFetching && (
+                <View className="px-3 space-y-5">
+                  <CardBookSkeleton key={"skeleton_0"} />
+                  <CardBookSkeleton key={"skeleton_1"} />
+                  <CardBookSkeleton key={"skeleton_2"} />
+                </View>
+              )}
             </>
           )}
-          data={flattenedWorks || []}
+          data={flattenedData}
           renderItem={(data) => <CardBook data={data.item} />}
-          keyExtractor={(item, index) => `${item.page}_${index}`}
-          ListEmptyComponent={() => (
-            <View className="px-3 space-y-5">
-              <CardBookSkeleton key={'skeleton_0'} />
-              <CardBookSkeleton key={'skeleton_1'} />
-              <CardBookSkeleton key={'skeleton_2'} />
-            </View>
-          )}
+          keyExtractor={(item, index) => `${item.key}_${index}`}
           onEndReachedThreshold={0.5}
-          onEndReached={() => {
-            if (isLoading) return;
-            if (isError) return;
-            if (isFetching) return;
-            if (isFetchingNextPage) return;
-            if (!hasNextPage) return;
-
-            fetchNextPage();
-          }}
+          onEndReached={onEndReached}
           ListFooterComponent={() => (
             <>
               {isFetchingNextPage && (
                 <View className="flex flex-row items-center justify-center space-x-2">
-                  <ActivityIndicator size={"small"} className="my-5" color={colors.indigo[600]} />
+                  <ActivityIndicator size={"small"} className="my-5" color={colors.blue[600]} />
                   <Text>Loading..</Text>
                 </View>
               )}
