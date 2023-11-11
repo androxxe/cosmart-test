@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
 import colors from "tailwindcss/colors";
 import { MainBottomTabsParamList, RootStackParamList } from "./index.type";
+import BookDetail from "@/screens/book-detail";
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainBottomTabsParamList>();
@@ -56,6 +57,7 @@ export const Navigator = () => {
       >
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="MainBottomTabs" component={MainBottomTabs} />
+        <Stack.Screen name="BookDetail" component={BookDetail} />
       </Stack.Navigator>
     </NavigationContainer>
   );

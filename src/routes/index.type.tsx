@@ -1,8 +1,12 @@
+import { Work } from "@/interfaces";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 
 export type RootStackParamList = {
   Login: undefined;
   MainBottomTabs: undefined;
+  BookDetail: {
+    work: Work;
+  };
 };
 
 export type RootStackNavigation = StackNavigationProp<RootStackParamList>;
