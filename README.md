@@ -1,5 +1,9 @@
 # Cosmart Test
 
+## To Do
+1. Setup eslint
+2. Setup husky
+
 ## Installation
 
 1.  This project uses Yarn, so run `yarn install`.
